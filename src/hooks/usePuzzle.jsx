@@ -12,7 +12,7 @@ const usePuzzle = () => {
 
         return {
           id: `${num}-puzzle`,
-          number: isLast(num) ? null : num,
+          number: isEmpty(num) ? null : num,
           position: num,
         };
       })
@@ -21,13 +21,44 @@ const usePuzzle = () => {
     setGrid(shuffle(newGrid));
   }, []);
 
-  const isLast = (position) => position === rows * columns;
+  const isEmpty = (position) => position === rows * columns;
 
-  const shuffle = (grid) => {
-    return grid;
+  const formatGrid = (grid) => {
+    // Format grid array to 2d array
+    let newGrid = [];
+
+    for (let i = 0; i < rows; i++) {
+      const startIndex = i * columns;
+      newGrid.push(grid.slice(startIndex, startIndex + columns));
+    }
+
+    return newGrid;
   };
 
-  return { grid };
+  const shuffle = (grid) => {
+    /**
+     * Fisher–Yates Shuffle
+     * https://bost.ocks.org/mike/shuffle/
+     */
+
+    let newGrid = grid.flat();
+    let remainingLength = newGrid.length;
+
+    while (remainingLength) {
+      // Pick a remaining element
+      const randomElement = Math.floor(Math.random() * remainingLength--);
+
+      // And swap it with the current element.
+      const temp = newGrid[remainingLength];
+      newGrid[randomElement].position = remainingLength + 1;
+      newGrid[remainingLength] = newGrid[randomElement];
+      newGrid[randomElement] = temp;
+    }
+
+    return formatGrid(newGrid);
+  };
+
+  return { grid, setGrid, shuffle };
 };
 
 export default usePuzzle;

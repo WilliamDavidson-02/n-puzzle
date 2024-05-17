@@ -5,7 +5,11 @@ import Typography from "@components/Typography";
 import usePuzzle from "@hooks/usePuzzle";
 
 const App = () => {
-  const { grid } = usePuzzle();
+  const { grid, setGrid, shuffle } = usePuzzle();
+
+  const handleShuffle = () => {
+    setGrid((prev) => shuffle(prev));
+  };
 
   return (
     <main className={styles.container}>
@@ -18,7 +22,9 @@ const App = () => {
         <Typography variant="h1">Puzzle</Typography>
       </header>
       <Grid grid={grid} />
-      <Button style={{ marginTop: "var(--s-md)" }}>Shuffle</Button>
+      <Button onClick={handleShuffle} style={{ marginTop: "var(--s-md)" }}>
+        Shuffle
+      </Button>
     </main>
   );
 };
