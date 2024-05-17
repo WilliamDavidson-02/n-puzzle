@@ -1,0 +1,29 @@
+.container {
+  max-width: 1024px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: var(--s-xl);
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s-md);
+  margin-bottom: var(--s-xl);
+}
+
+.icon {
+  --ratio: 30px;
+
+  width: var(--ratio);
+  height: var(--ratio);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: var(--s-xl) var(--s-4xl);
+  }
+}

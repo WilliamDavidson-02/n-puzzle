@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@components": "/src/components",
+      "@hooks": "/src/hooks",
+      "@lib": "/src/lib",
     },
   },
 });
