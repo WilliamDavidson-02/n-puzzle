@@ -1,4 +1,4 @@
 export default {
-  rows: 3,
-  columns: 3,
+  rows: 4,
+  columns: 4,
 };
