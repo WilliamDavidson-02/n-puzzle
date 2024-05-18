@@ -1,0 +1,28 @@
+.cell {
+  border: 1px solid var(--black);
+  border-radius: 0.5rem;
+  background-color: var(--white);
+  color: var(--black);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.empty.cell {
+  border: none;
+  cursor: default;
+}
+
+@media (min-width: 768px) {
+  .cell {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cell {
+    font-size: 1.5rem;
+  }
+}

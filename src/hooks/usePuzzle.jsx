@@ -13,7 +13,6 @@ const usePuzzle = () => {
         return {
           id: `${num}-puzzle`,
           number: isEmpty(num) ? null : num,
-          position: num,
         };
       })
     );
@@ -46,19 +45,84 @@ const usePuzzle = () => {
 
     while (remainingLength) {
       // Pick a remaining element
-      const randomElement = Math.floor(Math.random() * remainingLength--);
+      const randomIndex = Math.floor(Math.random() * remainingLength--);
 
       // And swap it with the current element.
       const temp = newGrid[remainingLength];
-      newGrid[randomElement].position = remainingLength + 1;
-      newGrid[remainingLength] = newGrid[randomElement];
-      newGrid[randomElement] = temp;
+      newGrid[remainingLength] = newGrid[randomIndex];
+      newGrid[randomIndex] = temp;
     }
 
     return formatGrid(newGrid);
   };
 
-  return { grid, setGrid, shuffle };
+  const findEmptyCell = (grid) => {
+    let row = null;
+    let col = null;
+
+    row = grid.findIndex((row) => row.some((col) => !col.number));
+    col = grid[row].findIndex((col) => !col.number);
+
+    return { row, col };
+  };
+
+  const isMovable = (empty, selected) => {
+    const { row, col } = empty;
+    const { rIndex, cIndex } = selected;
+
+    if (row !== rIndex && col !== cIndex) return false; // Not in the same row or column
+    if (row === rIndex && col === cIndex) return false; // Is empty cell
+
+    return true;
+  };
+
+  const isBefore = (empty, selected) => empty > selected;
+
+  const swap = ({ grid, r1, c1, r2, c2 }) => {
+    let newGrid = [...grid];
+    const temp = newGrid[r1][c1];
+    newGrid[r1][c1] = newGrid[r2][c2];
+    newGrid[r2][c2] = temp;
+
+    return newGrid;
+  };
+
+  const move = ({ rIndex, cIndex }) => {
+    const { row, col } = findEmptyCell(grid);
+
+    if (!isMovable({ row, col }, { rIndex, cIndex })) return;
+
+    let newGrid = [...grid];
+
+    /**
+     * Swap cells from empty to selected
+     */
+    if (row === rIndex) {
+      if (isBefore(col, cIndex)) {
+        for (let c = col; c > cIndex; c--) {
+          newGrid = swap({ grid: newGrid, r1: row, c1: c, r2: row, c2: c - 1 });
+        }
+      } else {
+        for (let c = col; c < cIndex; c++) {
+          newGrid = swap({ grid: newGrid, r1: row, c1: c, r2: row, c2: c + 1 });
+        }
+      }
+    } else if (col === cIndex) {
+      if (isBefore(row, rIndex)) {
+        for (let r = row; r > rIndex; r--) {
+          newGrid = swap({ grid: newGrid, r1: r, c1: col, r2: r - 1, c2: col });
+        }
+      } else {
+        for (let r = row; r < rIndex; r++) {
+          newGrid = swap({ grid: newGrid, r1: r, c1: col, r2: r + 1, c2: col });
+        }
+      }
+    }
+
+    setGrid(newGrid);
+  };
+
+  return { grid, setGrid, shuffle, move };
 };
 
 export default usePuzzle;

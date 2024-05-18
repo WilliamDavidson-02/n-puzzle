@@ -3,9 +3,7 @@ import puzzleConfig from "@lib/puzzleConfig";
 
 const { rows, columns } = puzzleConfig;
 
-const Grid = ({ grid }) => {
-  if (!grid) return <div>Empty</div>;
-
+const Grid = ({ children }) => {
   return (
     <div
       className={styles.grid}
@@ -14,16 +12,7 @@ const Grid = ({ grid }) => {
         gridTemplateRows: `repeat(${rows}, 1fr)`,
       }}
     >
-      {grid.map((row) =>
-        row.map((col) => (
-          <div
-            key={col.id}
-            className={`${styles.cell} ${!col.number ? styles.empty : ""}`}
-          >
-            {col.number}
-          </div>
-        ))
-      )}
+      {children}
     </div>
   );
 };
