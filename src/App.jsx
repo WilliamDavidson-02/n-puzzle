@@ -6,21 +6,28 @@ import Typography from "@components/Typography";
 import usePuzzle from "@hooks/usePuzzle";
 
 const App = () => {
-  const { grid, setGrid, shuffle, move } = usePuzzle();
-
-  const handleShuffle = () => {
-    setGrid((prev) => shuffle(prev));
-  };
+  const { grid, setGrid, shuffle, move, gameData } = usePuzzle();
 
   return (
     <main className={styles.container}>
       <header className={styles.header}>
-        <img
-          src={"/puzzle_icon.svg"}
-          alt="puzzle icon"
-          className={styles.icon}
-        />
-        <Typography variant="h1">Puzzle</Typography>
+        {gameData.gameOver ? (
+          <div>
+            <Typography variant="h1">Congratulations!</Typography>
+            <Typography style={{ textAlign: "center" }} variant="p">
+              You solved the puzzle in {gameData.moves} moves.
+            </Typography>
+          </div>
+        ) : (
+          <>
+            <img
+              src={"/puzzle_icon.svg"}
+              alt="puzzle icon"
+              className={styles.icon}
+            />
+            <Typography variant="h1">Puzzle</Typography>
+          </>
+        )}
       </header>
       <Grid>
         {grid.map((row, rIndex) =>
@@ -36,7 +43,7 @@ const App = () => {
         )}
       </Grid>
       <Button
-        onClick={handleShuffle}
+        onClick={() => setGrid((prev) => shuffle(prev))}
         size="lg"
         style={{ marginTop: "var(--s-md)" }}
       >

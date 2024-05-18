@@ -1,9 +1,15 @@
-import puzzleConfig from "@lib/puzzleConfig";
 import { useEffect, useState } from "react";
+import puzzleConfig from "@lib/puzzleConfig";
+
+const initialGameData = {
+  gameOver: false,
+  moves: 0,
+};
 
 const usePuzzle = () => {
   const { rows, columns } = puzzleConfig;
   const [grid, setGrid] = useState([]);
+  const [gameData, setGameData] = useState(initialGameData);
 
   useEffect(() => {
     const newGrid = Array.from({ length: rows }).map((_, rIndex) =>
@@ -19,6 +25,18 @@ const usePuzzle = () => {
 
     setGrid(shuffle(newGrid));
   }, []);
+
+  const isGameOver = (grid) => {
+    const flatenGrid = grid.flat();
+
+    // -2 to avoid comparing number with empty cell (null)
+    for (let i = 0; i < flatenGrid.length - 2; i++) {
+      // if current number + 1 does not equal next number, celles or not in order
+      if (flatenGrid[i].number + 1 !== flatenGrid[i + 1].number) return false;
+    }
+
+    return true;
+  };
 
   const isEmpty = (position) => position === rows * columns;
 
@@ -52,6 +70,9 @@ const usePuzzle = () => {
       newGrid[remainingLength] = newGrid[randomIndex];
       newGrid[randomIndex] = temp;
     }
+
+    // Reset game data
+    setGameData(initialGameData);
 
     return formatGrid(newGrid);
   };
@@ -92,10 +113,15 @@ const usePuzzle = () => {
 
     if (!isMovable({ row, col }, { rIndex, cIndex })) return;
 
+    setGameData((prev) => ({
+      ...prev,
+      moves: prev.moves + 1,
+    }));
+
     let newGrid = [...grid];
 
     /**
-     * Swap cells from empty to selected
+     * Swap cell (r1, c1) with cell (r2, c2)
      */
     if (row === rIndex) {
       if (isBefore(col, cIndex)) {
@@ -120,9 +146,12 @@ const usePuzzle = () => {
     }
 
     setGrid(newGrid);
+    if (isGameOver(newGrid)) {
+      setGameData((prev) => ({ ...prev, gameOver: true }));
+    }
   };
 
-  return { grid, setGrid, shuffle, move };
+  return { grid, setGrid, shuffle, move, gameData };
 };
 
 export default usePuzzle;
